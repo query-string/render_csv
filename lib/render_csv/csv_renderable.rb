@@ -16,8 +16,10 @@ module RenderCsv
       columns -= options[:except].map(&:to_s) if options[:except]
       columns += options[:add_methods].map(&:to_s) if options[:add_methods]
 
+      column_titles = columns.map{|c| first.respond_to?("#{c}_title") ? first.send("#{c}_title") : c}
+
       CSV.generate(encoding: 'utf-8') do |row|
-        row << columns
+        row << column_titles
         self.each do |obj|
           row << columns.map { |c| obj.send(c) }
         end
